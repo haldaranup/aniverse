@@ -1,8 +1,8 @@
 import express from "express";
-import { config } from "./config/config.js";
-import { connectDb } from "./config/db.js";
-import userRoute from "./routes/user.route.js";
-import animeRoute from "./routes/anime.route.js";
+import { config } from "./src/config/config.js";
+import { connectDb } from "./src/config/db.js";
+import userRoute from "./src/routes/user.route.js";
+import animeRoute from "./src/routes/anime.route.js";
 import cors from "cors";
 
 const app = express();
