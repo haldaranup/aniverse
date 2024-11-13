@@ -7,20 +7,23 @@ const getAllAnime = async (req, res) => {
       return res.status(200).json({
         status: "success",
         message: "Anime fetched successfully",
-        data: allAnime,
+        data: {
+          count: allAnime.length,
+          anime: allAnime
+        },
       });
     } else {
       return res.status(200).json({
         status: "fail",
         message: "No Anime found",
-        data: [],
+        data: {},
       });
     }
   } catch (error) {
     return res.status(400).json({
       status: "fail",
       message: "Something went wrong",
-      data: [],
+      data: {},
     });
   }
 };
@@ -31,7 +34,7 @@ const addAnime = async (req, res) => {
     return res.status(400).json({
       status: "fail",
       message: "Required fields are missing",
-      data: [],
+      data: {},
     });
   }
   console.log({ ...req.body });
@@ -40,16 +43,51 @@ const addAnime = async (req, res) => {
     return res.status(201).json({
       status: "success",
       message: "Anime created successfully",
-      data: createAnime,
+      data: {
+        anime: createAnime
+      },
     });
   } catch (error) {
     return res.status(400).json({
       status: "fail",
       message: "Something went wrong",
-      data: [],
+      data: {},
     });
   }
 };
+
+const addMultipleAnimes = async (req, res) => {
+  const animes = req.body;
+
+  if(!Array.isArray(animes) && animes.length < 1) {
+    return res.status(400).json({
+      status: "fail",
+      message: "Please provide array of animes",
+      data: {},
+    });
+  }
+  
+  animes.forEach(anime => {
+    if (!anime.title || !anime.description || !anime.genres || !anime.episodes || !anime.status) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Required fields are missing",
+        data: {},
+      });
+    }
+  });
+
+  const addMultiple = await Anime.insertMany(animes);
+
+  return res.status(200).json({
+    status: "success",
+    message: "Animes were added successfully",
+    data: {
+      count: animes.length,
+      animes: addMultiple
+    },
+  })
+}
 
 const getAnimeById = async (req, res) => {
   try {
@@ -59,20 +97,22 @@ const getAnimeById = async (req, res) => {
       return res.status(204).json({
         status: "success",
         message: "Anime not found",
-        data: { id: id },
+        data: {},
       });
     } else {
       return res.status(200).json({
         status: "success",
         message: "Anime fetched successfully",
-        data: anime,
+        data: {
+          anime: anime
+        },
       });
     }
   } catch (error) {
     return res.status(400).json({
       status: "fail",
       message: "Something went wrong",
-      data: [],
+      data: {},
     });
   }
 };
@@ -92,14 +132,16 @@ const updateAnimeById = async (req, res) => {
       return res.status(201).json({
         status: "success",
         message: `Anime with id ${id} updated successfully`,
-        data: anime,
+        data: {
+          anime: anime
+        },
       });
     }
   } catch (error) {
     return res.status(400).json({
       status: "fail",
       message: "Something went wrong",
-      data: [],
+      data: {},
     });
   }
 };
@@ -112,20 +154,22 @@ const deleteAnimeById = async (req, res) => {
       return res.status(200).json({
         status: "fail",
         message: "Anime not found",
-        data: [],
+        data: {},
       });
     } else {
       return res.status(200).json({
         status: "success",
         message: `Anime with id ${id} deleted successfully`,
-        data: anime,
+        data: {
+          anime: anime
+        },
       });
     }
   } catch (error) {
     return res.status(400).json({
       status: "fail",
       message: "Something went wrong",
-      data: [],
+      data: {},
     });
   }
 };
@@ -136,4 +180,5 @@ export {
   getAnimeById,
   updateAnimeById,
   deleteAnimeById,
+  addMultipleAnimes
 };

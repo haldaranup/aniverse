@@ -9,7 +9,7 @@ const registerUser = async (req, res) => {
     return res.status(400).json({
       status: "fail",
       message: "All fields must be provided",
-      data: [],
+      data: {},
     });
   }
 
@@ -19,7 +19,7 @@ const registerUser = async (req, res) => {
       return res.status(200).json({
         status: "fail",
         message: "User already exists",
-        data: [],
+        data: {},
       });
     }
 
@@ -28,13 +28,15 @@ const registerUser = async (req, res) => {
     return res.json({
       status: "Success",
       message: "User created",
-      data: createUser,
+      data: {
+        user: createUser
+      },
     });
   } catch (error) {
     return res.status(400).json({
       status: "fail",
       message: "Something went wrong",
-      data: [],
+      data: {},
     });
   }
 };
@@ -46,7 +48,7 @@ const loginUser = async (req, res) => {
     return res.status(400).json({
       status: "fail",
       message: "All fields must be provided",
-      data: [],
+      data: {},
     });
   }
 
@@ -56,7 +58,7 @@ const loginUser = async (req, res) => {
       return res.status(400).json({
         status: "fail",
         message: "User not found",
-        data: [],
+        data: {},
       });
     }
 
@@ -65,7 +67,7 @@ const loginUser = async (req, res) => {
       return res.status(400).json({
         status: "fail",
         message: "Email or password incorrect",
-        data: [],
+        data: {},
       });
     }
 
@@ -87,7 +89,7 @@ const loginUser = async (req, res) => {
     return res.status(400).json({
       status: "fail",
       message: "Something went wrong",
-      data: [],
+      data: {},
     });
   }
 };
