@@ -7,7 +7,9 @@ const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
     return res.status(400).json({
+      status: "fail",
       message: "All fields must be provided",
+      data: [],
     });
   }
 
@@ -15,18 +17,25 @@ const registerUser = async (req, res) => {
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(200).json({
+        status: "fail",
         message: "User already exists",
+        data: [],
       });
     }
 
     const createUser = await User.create({ name, email, password });
 
     return res.json({
-      message: "Success",
-      user: createUser,
+      status: "Success",
+      message: "User created",
+      data: createUser,
     });
   } catch (error) {
-    console.log("Error creating user", error);
+    return res.status(400).json({
+      status: "fail",
+      message: "Something went wrong",
+      data: [],
+    });
   }
 };
 
@@ -35,7 +44,9 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(400).json({
+      status: "fail",
       message: "All fields must be provided",
+      data: [],
     });
   }
 
@@ -43,29 +54,42 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
+        status: "fail",
         message: "User not found",
+        data: [],
       });
     }
 
     const comparePassword = await bcrypt.compare(password, user.password);
     if (!comparePassword) {
       return res.status(400).json({
+        status: "fail",
         message: "Email or password incorrect",
+        data: [],
       });
     }
 
     const token = user.generateToken();
 
     return res.status(200).json({
+      status: "success",
       message: "Logged in successfully",
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
+      data: {
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+        },
       },
     });
-  } catch (error) {}
+  } catch (error) {
+    return res.status(400).json({
+      status: "fail",
+      message: "Something went wrong",
+      data: [],
+    });
+  }
 };
 
 export { registerUser, loginUser };

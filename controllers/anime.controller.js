@@ -5,31 +5,50 @@ const getAllAnime = async (req, res) => {
     const allAnime = await Anime.find({});
     if (allAnime.length > 0) {
       return res.status(200).json({
+        status: "success",
         message: "Anime fetched successfully",
         data: allAnime,
       });
     } else {
       return res.status(200).json({
+        status: "fail",
         message: "No Anime found",
         data: [],
       });
     }
-  } catch (error) {}
+  } catch (error) {
+    return res.status(400).json({
+      status: "fail",
+      message: "Something went wrong",
+      data: [],
+    });
+  }
 };
 
 const addAnime = async (req, res) => {
   const { title, description, genres, episodes, status } = req.body;
   if (!title || !description || !genres || !episodes || !status) {
-    return res.status(400).json({ message: "Required fields are missing" });
+    return res.status(400).json({
+      status: "fail",
+      message: "Required fields are missing",
+      data: [],
+    });
   }
   console.log({ ...req.body });
   try {
     const createAnime = await Anime.create({ ...req.body });
     return res.status(201).json({
+      status: "success",
       message: "Anime created successfully",
       data: createAnime,
     });
-  } catch (error) {}
+  } catch (error) {
+    return res.status(400).json({
+      status: "fail",
+      message: "Something went wrong",
+      data: [],
+    });
+  }
 };
 
 const getAnimeById = async (req, res) => {
@@ -37,16 +56,24 @@ const getAnimeById = async (req, res) => {
     const id = req.params.id;
     const anime = await Anime.findById(id);
     if (!anime) {
-      return res
-        .status(200)
-        .json({ message: "Anime not found", data: { id: id } });
+      return res.status(204).json({
+        status: "success",
+        message: "Anime not found",
+        data: { id: id },
+      });
     } else {
-      return res
-        .status(200)
-        .json({ message: "Anime fetched successfully", data: anime });
+      return res.status(200).json({
+        status: "success",
+        message: "Anime fetched successfully",
+        data: anime,
+      });
     }
   } catch (error) {
-    return res.status(200).json({ message: "Something went wrong" });
+    return res.status(400).json({
+      status: "fail",
+      message: "Something went wrong",
+      data: [],
+    });
   }
 };
 
@@ -56,17 +83,24 @@ const updateAnimeById = async (req, res) => {
     const updateData = req.body;
     const anime = await Anime.findByIdAndUpdate(id, updateData, { new: true });
     if (!anime) {
-      return res.status(200).json({ message: "Anime not found", data: anime });
+      return res.status(204).json({
+        status: "fail",
+        message: "Anime not found",
+        data: anime,
+      });
     } else {
-      return res
-        .status(200)
-        .json({
-          message: `Anime with id ${id} updated successfully`,
-          data: anime,
-        });
+      return res.status(201).json({
+        status: "success",
+        message: `Anime with id ${id} updated successfully`,
+        data: anime,
+      });
     }
   } catch (error) {
-    return res.status(200).json({ message: "Something went wrong" });
+    return res.status(400).json({
+      status: "fail",
+      message: "Something went wrong",
+      data: [],
+    });
   }
 };
 
@@ -75,17 +109,24 @@ const deleteAnimeById = async (req, res) => {
     const id = req.params.id;
     const anime = await Anime.findByIdAndDelete(id);
     if (!anime) {
-      return res.status(200).json({ message: "Anime not found" });
+      return res.status(200).json({
+        status: "fail",
+        message: "Anime not found",
+        data: [],
+      });
     } else {
-      return res
-        .status(200)
-        .json({
-          message: `Anime with id ${id} deleted successfully`,
-          data: anime,
-        });
+      return res.status(200).json({
+        status: "success",
+        message: `Anime with id ${id} deleted successfully`,
+        data: anime,
+      });
     }
   } catch (error) {
-    return res.status(200).json({ message: "Something went wrong" });
+    return res.status(400).json({
+      status: "fail",
+      message: "Something went wrong",
+      data: [],
+    });
   }
 };
 
