@@ -1,6 +1,7 @@
 import express from "express";
 import {
   addAnime,
+  addMultipleAnimes,
   deleteAnimeById,
   getAllAnime,
   getAnimeById,
@@ -10,6 +11,7 @@ import {
 const router = express.Router();
 
 router.post("/", addAnime);
+router.post("/bulk", addMultipleAnimes);
 router.get("/", getAllAnime);
 router.get("/:id", getAnimeById);
 router.put("/:id", updateAnimeById);

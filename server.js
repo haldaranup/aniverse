@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/user", userRoute);
-app.use("/api/anime", animeRoute);
+app.use("/api/animes", animeRoute);
 
 app.listen(config.port, (error) => {
   connectDb();
